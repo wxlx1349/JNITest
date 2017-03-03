@@ -1,9 +1,13 @@
 package com.example.wangxi.jnid;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     JNITest jniTest;
+    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,24 @@ public class MainActivity extends AppCompatActivity {
         Log.e("tag", " count=" + JNITest.count);
         jniTest.accessMethod();
         Log.e("tag", " count1=" + JNITest.count);
-        jniTest.accessStaticMethod();
+        jniTest.accessStaticMethod(path);
+
+        Date date = (Date) jniTest.accessConstructor();
+        Log.e("tag", "time=" + date.getTime());
+        jniTest.accessNonvirtualMethod();
+
+//        Log.e("tag", "chineseChars=" + jniTest.chineseChars());
+
+        int[] arr = new int[]{7, 4, 9, 0, 3, 6};
+        jniTest.giveArray(arr);
+        printArr(arr);
+        printArr(jniTest.getArray(7));
+    }
+
+    private void printArr(int[] arr) {
+        for (int i : arr) {
+            Log.e("tag", "arr i=" + i);
+        }
     }
 
     /**
