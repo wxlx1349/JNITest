@@ -174,6 +174,7 @@ JNIEXPORT jintArray JNICALL Java_com_example_wangxi_jnid_JNITest_getArray
     //同步
     env->ReleaseIntArrayElements(jint_arr, elems, JNI_COMMIT);
     return jint_arr;
+
 };
 
 
