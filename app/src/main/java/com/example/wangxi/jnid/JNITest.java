@@ -12,6 +12,8 @@ public class JNITest {
     public String key="jason";
     public static int count = 9;
 
+    public Human human = new Man();
+
     public native String accessField();
 
     //访问属性，返回修改之后的属性内容
@@ -20,7 +22,17 @@ public class JNITest {
 
     public native void accessMethod();
 //
-    public native void accessStaticMethod();
+    public native void accessStaticMethod(String path);
+
+    public native Object accessConstructor();
+
+    public native void accessNonvirtualMethod();
+
+//    public native String chineseChars();
+
+    public native void giveArray(int[] array);
+
+    public native int[] getArray(int len);
 
     //产生指定范围的随机数
     public int genRandomInt(int max){
@@ -32,5 +44,7 @@ public class JNITest {
     public static String getUUID(){
         return UUID.randomUUID().toString();
     }
+
+
 
 }

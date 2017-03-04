@@ -22,7 +22,23 @@ JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_accessMethod
         (JNIEnv *,jobject);
 
 JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_accessStaticMethod
+        (JNIEnv *,jobject,jstring);
+
+JNIEXPORT jobject JNICALL Java_com_example_wangxi_jnid_JNITest_accessConstructor
         (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_accessNonvirtualMethod
+        (JNIEnv *,jobject);
+
+JNIEXPORT jstring JNICALL Java_com_example_wangxi_jnid_JNITest_chineseChars
+        (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_giveArray
+        (JNIEnv *,jobject,jintArray t);
+
+JNIEXPORT jintArray JNICALL Java_com_example_wangxi_jnid_JNITest_getArray
+        (JNIEnv *,jobject,jint len);
+
 #ifdef __cplusplus
 }
 #endif
