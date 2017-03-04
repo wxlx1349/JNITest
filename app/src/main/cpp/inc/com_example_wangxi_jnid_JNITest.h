@@ -39,6 +39,26 @@ JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_giveArray
 JNIEXPORT jintArray JNICALL Java_com_example_wangxi_jnid_JNITest_getArray
         (JNIEnv *,jobject,jint len);
 
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_localRef
+        (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_createGlobalRef
+        (JNIEnv *,jobject);
+
+JNIEXPORT jstring JNICALL Java_com_example_wangxi_jnid_JNITest_getGlobalRef
+        (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_deleteGlobalRef
+        (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_exception
+        (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_cached
+        (JNIEnv *,jobject);
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_initIds
+        (JNIEnv *env, jclass jcls);
 #ifdef __cplusplus
 }
 #endif

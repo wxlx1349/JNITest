@@ -34,6 +34,20 @@ public class JNITest {
 
     public native int[] getArray(int len);
 
+    public native void localRef();
+
+    public native void createGlobalRef();
+
+    public native String getGlobalRef();
+
+    public native void deleteGlobalRef();
+//
+    public native void exception();
+
+    public native void cached();
+
+    public native static void initIds();
+
     //产生指定范围的随机数
     public int genRandomInt(int max){
         System.out.println("genRandomInt 执行了...");

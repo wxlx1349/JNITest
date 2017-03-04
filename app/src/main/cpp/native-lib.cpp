@@ -1,5 +1,5 @@
 #include <jni.h>
-#include <string>
+#include <string.h>
 #include "com_example_wangxi_jnid_JNITest.h"
 #include <iostream>
 #include <stdlib.h>
@@ -176,6 +176,107 @@ JNIEXPORT jintArray JNICALL Java_com_example_wangxi_jnid_JNITest_getArray
     return jint_arr;
 
 };
+
+//JNI 引用变量
+//引用类型：局部引用和全局引用
+//作用：在JNI中告知虚拟机何时回收一个JNI变量
+
+//局部引用，通过DeleteLocalRef手动释放对象
+//1.访问一个很大的java对象，使用完之后，还要进行复杂的耗时操作
+//2.创建了大量的局部引用，占用了太多的内存，而且这些局部引用跟后面的操作没有关联性
+
+//模拟：循环创建数组
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_localRef
+        (JNIEnv *env,jobject jobj){
+    int i=0;
+    for(;i<5;i++){
+        jclass cls=env->FindClass("java/util/Date");
+        jmethodID constructor_mid=env->GetMethodID(cls,"<init>","()V");
+        jobject obj=env->NewObject(cls,constructor_mid);
+        //此处省略一百行代码...
+
+        //不在使用jobject对象了
+        //通知垃圾回收器回收这些对象
+        env->DeleteLocalRef(obj);
+        //此处省略一百行代码...
+    }
+};
+
+jstring global_str;
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_createGlobalRef
+        (JNIEnv *env,jobject jobj){
+    jstring obj=env->NewStringUTF("I love xm");
+    global_str= (jstring) env->NewGlobalRef(obj);
+};
+
+JNIEXPORT jstring JNICALL Java_com_example_wangxi_jnid_JNITest_getGlobalRef
+        (JNIEnv *env,jobject jobj){
+    return global_str;
+};
+
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_deleteGlobalRef
+        (JNIEnv *env,jobject jobj){
+    env->DeleteGlobalRef(global_str);
+};
+
+//弱全局引用
+//节省内存，在内存不足时可以是释放所引用的对象
+//可以引用一个不常用的对象，如果为NULL，临时创建
+//创建：NewWeakGlobalRef,销毁：DeleteGlobalWeakRef
+
+//异常处理
+//1.保证Java代码可以运行
+//2.补救措施保证C代码继续运行
+
+//JNI自己抛出的Throwable异常，可以只能在C层清空
+//用户通过ThrowNew抛出的异常，可以在Java层捕捉
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_exception
+        (JNIEnv *env,jobject jobj){
+    jclass cls=env->GetObjectClass(jobj);
+    jfieldID fid=env->GetFieldID(cls,"key2","Ljava/lang/String;");
+    //检测是否发生Java异常
+    jthrowable exception = env->ExceptionOccurred();
+    if(exception!=NULL){
+        //让Java代码可以继续运行
+        //清空异常信息
+        env->ExceptionClear();
+        fid=env->GetFieldID(cls,"key","Ljava/lang/String;");
+    }
+
+    jstring jstr= (jstring) env->GetObjectField(jobj, fid);
+    char *str= (char *) env->GetStringUTFChars(jstr, NULL);
+//对比属性值是否合法
+    if(strcmp(str,"xiao mei")!=0){
+//认为抛出异常，给Java层处理
+        jclass newExcCls=env->FindClass("java/lang/IllegalArgumentException");
+        env->ThrowNew(newExcCls,"key value is invalid!");
+    }
+
+};
+
+//局部静态变量只能局部用，但是只初始化一次
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_cached
+        (JNIEnv *env,jobject jobj){
+    jclass  cls=env->GetObjectClass(jobj);
+    //获取jfieldID只获取一次
+    //局部静态变量
+    static jfieldID key_id = NULL;
+    if (key_id == NULL){
+        key_id = env->GetFieldID( cls, "key", "Ljava/lang/String;");
+        printf("--------GetFieldID-------\n");
+    }
+};
+
+//初始化全局变量，动态库加载完成之后，立刻缓存起来
+jfieldID key_fid;
+jmethodID random_mid;
+JNIEXPORT void JNICALL Java_com_example_wangxi_jnid_JNITest_initIds(JNIEnv *env, jclass jcls){
+    key_fid = env->GetFieldID( jcls, "key", "Ljava/lang/String;");
+    random_mid = env->GetMethodID( jcls, "genRandomInt", "(I)I");
+}
+
+
 
 
 
